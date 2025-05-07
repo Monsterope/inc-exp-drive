@@ -7,7 +7,7 @@
                 <UButton @click="clickMenu('history')" color="info">History</UButton>
             </div>
             <div>
-                <UButton @click="addData" block :color="menuColor" :disabled="catePrice == 'history'">{{ catePrice }}</UButton>
+                <UButton @click="addData" block :color="menuColor" :disabled="submitDisabled">{{ isLoading == true ? "Saving..." : catePrice }}</UButton>
             </div>
             <div v-if="catePrice == 'deposit' || catePrice == 'withdraw'">
                 <USelect v-model="typePrice" :items="typeItems" class="w-48" />
@@ -39,29 +39,39 @@
             <div v-if="catePrice == 'history'" class="flex justify-center items-center gap-4 text-center">
                 <span>
                     <div>สุทธิ</div>
-                    <div>{{ dataHisSum.balance }}</div>
+                    <div><UBadge :color="dataHisSum.balance < 0 ? 'error' : 'success'">{{ dataHisSum.balance }}</UBadge></div>
+                </span>
+            </div>
+            <div v-if="catePrice == 'history'" class="flex justify-center items-center gap-4 text-center">
+                <span>
+                    <div>จ่ายไป</div>
+                    <div><UBadge color="error">{{ dataHisSum.withdraw }}</UBadge></div>
+                </span>
+                <span>
+                    <div>app</div>
+                    <div><UBadge color="error">{{ dataHisSum.app }}</UBadge></div>
                 </span>
             </div>
             <div v-if="catePrice == 'history'" class="flex justify-center items-center gap-4 text-center">
                 <span>
                     <div>รับมา</div>
-                    <div>{{ dataHisSum.all }}</div>
+                    <div><UBadge color="warning">{{ dataHisSum.all }}</UBadge></div>
                 </span>
                 <span>
                     <div>ลูกค้า</div>
-                    <div>{{ dataHisSum.cust }}</div>
+                    <div><UBadge color="warning">{{ dataHisSum.cust }}</UBadge></div>
                 </span>
                 <span>
                     <div>ทิป</div>
-                    <div>{{ dataHisSum.tip }}</div>
+                    <div><UBadge color="success">{{ dataHisSum.tip }}</UBadge></div>
                 </span>
                 <span>
                     <div>ได้จริง</div>
-                    <div>{{ dataHisSum.valid }}</div>
+                    <div><UBadge color="success">{{ dataHisSum.valid }}</UBadge></div>
                 </span>
             </div>
             <div v-if="catePrice == 'history'" >
-                <div class="overflow-y-auto max-h-[22vh] space-y-4">
+                <div class="overflow-y-auto max-h-[20vh] space-y-4">
                     <div v-for="(his,i) in dataHis" class="w-full max-w-sm p-6 rounded-xl shadow-md space-y-4" :class="his.cate == 'withdraw' ? 'bg-red-400' : 'bg-green-300'">
                         <div class="text-xs">{{ dateFormatFunc(his.datetime) }} <UBadge color="info">{{ his.type }} </UBadge> <UBadge color="neutral">{{ his.name }}</UBadge></div>
                         <div class="flex justify-center items-center gap-4 text-center">
@@ -86,6 +96,8 @@
 </template>
 
 <script setup>
+import { UBadge } from '#components'
+
 definePageMeta({
     middleware: ['auth']
 })
@@ -111,6 +123,7 @@ const dateT = ref(`${yyyy}-${mm}-${dd}`)
 
 const dataHis = ref([])
 const dataHisSum = ref({})
+const isLoading = ref(false)
 
 const clickMenu = async (menuType) => {
     name.value = menuType == "deposit" ? menuType : ""
@@ -126,6 +139,7 @@ const clickMenu = async (menuType) => {
 }
 
 const addData = async() => {
+    isLoading.value = true
     const reqData = {
         "name": name.value,
         "type": typePrice.value,
@@ -142,8 +156,10 @@ const addData = async() => {
             body: reqData
         })
         await clickMenu(catePrice.value)
+        isLoading.value = false
     } catch (error) {
         console.log(error)
+        isLoading.value = false
     }
 
 }
@@ -163,6 +179,33 @@ const menuColor = computed(() => {
     }
     if (catePrice.value == "history"){
         return "info"
+    }
+})
+
+const submitDisabled = computed(() => {
+    if (catePrice.value == "deposit"){
+        if (isLoading.value == true){
+            return true
+        }
+        if (amount_all.value == 0 && amount_cust.value == 0 &&amount_tip.value == 0 && amount_valid.value == 0){
+            return true
+        }
+        return false
+    }
+    if (catePrice.value == "withdraw"){
+        if (isLoading.value == true){
+            return true
+        }
+        if (name.value == ""){
+            return true
+        }
+        if (amount_all.value == 0){
+            return true
+        }
+        return false
+    }
+    if (catePrice.value == "history"){
+        return true
     }
 })
 
