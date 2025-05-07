@@ -20,10 +20,6 @@ const userForm = reactive({
 
 const { login, token, fetchUser } = useAuth()
 
-if (token) {
-    navigateTo("/")
-}
-
 const loginAction = async () => {
     await login(userForm)
     await fetchUser()
