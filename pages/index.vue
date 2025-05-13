@@ -41,6 +41,18 @@
                     <div>สุทธิ</div>
                     <div><UBadge :color="dataHisSum.balance < 0 ? 'error' : 'success'">{{ dataHisSum.balance }}</UBadge></div>
                 </span>
+                <span>
+                    <div>cash</div>
+                    <div><UBadge :color="dataHisSum.balance < 0 ? 'error' : 'success'">{{ dataHisSum.cashmy }}</UBadge></div>
+                </span>
+                <span>
+                    <div>scan</div>
+                    <div><UBadge :color="dataHisSum.balance < 0 ? 'error' : 'success'">{{ dataHisSum.scanmy }}</UBadge></div>
+                </span>
+                <span>
+                    <div>appqr</div>
+                    <div><UBadge :color="dataHisSum.balance < 0 ? 'error' : 'success'">{{ dataHisSum.appmy }}</UBadge></div>
+                </span>
             </div>
             <div v-if="catePrice == 'history'" class="flex justify-center items-center gap-4 text-center">
                 <span>
@@ -50,6 +62,10 @@
                 <span>
                     <div>app</div>
                     <div><UBadge color="error">{{ dataHisSum.app }}</UBadge></div>
+                </span>
+                <span>
+                    <div>capp</div>
+                    <div><UBadge color="error">{{ dataHisSum.appcash }}</UBadge></div>
                 </span>
             </div>
             <div v-if="catePrice == 'history'" class="flex justify-center items-center gap-4 text-center">
