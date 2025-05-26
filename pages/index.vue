@@ -17,7 +17,7 @@
                 <UInput placeholder="NamePrice" v-model="name" />
                 <span> ชื่อ</span>
             </div>
-            <div v-if="catePrice == 'deposit' || catePrice == 'withdraw'">
+            <div v-if="catePrice == 'deposit' || catePrice == 'withdraw'" @blur="calAmountAppOrQr">
                 <UInput placeholder="AmountAll" v-model="amount_all" type="number" />
                 <span> {{ catePrice == "withdraw" ? " จ่ายไป" : " รับมา" }}</span>
             </div>
@@ -183,6 +183,12 @@ const addData = async() => {
 const calAmountTip = async() => {
     if (typePrice.value != "app" && typePrice.value != "qr"){
         amount_tip.value = amount_all.value - amount_cust.value
+    }
+}
+
+const calAmountAppOrQr = async() => {
+    if (typePrice.value == "app" || typePrice.value == "qr"){
+        amount_valid.value = amount_all.value
     }
 }
 
