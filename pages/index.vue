@@ -17,8 +17,8 @@
                 <UInput placeholder="NamePrice" v-model="name" />
                 <span> ชื่อ</span>
             </div>
-            <div v-if="catePrice == 'deposit' || catePrice == 'withdraw'" @blur="calAmountAppOrQr">
-                <UInput placeholder="AmountAll" v-model="amount_all" type="number" />
+            <div v-if="catePrice == 'deposit' || catePrice == 'withdraw'">
+                <UInput placeholder="AmountAll" v-model="amount_all" type="number" @blur="calAmountAppOrQr" />
                 <span> {{ catePrice == "withdraw" ? " จ่ายไป" : " รับมา" }}</span>
             </div>
             <div v-if="catePrice == 'deposit'">
